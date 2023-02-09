@@ -1,6 +1,6 @@
 {
   "name": "node-red-contrib-hash-helper",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Node-RED node for generating and verifying SHA hashes",
   "keywords": [
     "node-red-nodegen", 
