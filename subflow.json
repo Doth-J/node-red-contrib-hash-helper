@@ -1,0 +1,635 @@
+{
+    "id": "67cc197263b1b567",
+    "type": "subflow",
+    "name": "Hash Helper",
+    "info": "",
+    "category": "CryptoRed",
+    "in": [],
+    "out": [],
+    "env": [],
+    "meta": {
+        "module": "node-red-contrib-hash-helper",
+        "version": "0.0.1",
+        "author": "Thodoris Ioannidis <thodoris.ioannidis@inqbit.io>",
+        "desc": "This is a subflow node that allows for the generation and verification of SHA digested hashes",
+        "keywords": "hash, sha, hmac",
+        "license": "Apache-2.0"
+    },
+    "color": "#E9967A",
+    "icon": "node-red/function.svg",
+    "flow": [
+        {
+            "id": "422a2f30f429bc31",
+            "type": "subflow",
+            "name": "HMAC",
+            "info": "",
+            "category": "CryptoRed",
+            "in": [
+                {
+                    "x": 300,
+                    "y": 200,
+                    "wires": [
+                        {
+                            "id": "54d1fe1eeb773754"
+                        }
+                    ]
+                }
+            ],
+            "out": [
+                {
+                    "x": 980,
+                    "y": 200,
+                    "wires": [
+                        {
+                            "id": "54d1fe1eeb773754",
+                            "port": 0
+                        }
+                    ]
+                }
+            ],
+            "env": [
+                {
+                    "name": "version",
+                    "type": "str",
+                    "value": "1",
+                    "ui": {
+                        "icon": "font-awesome/fa-gear",
+                        "label": {
+                            "en-US": "Version"
+                        },
+                        "type": "select",
+                        "opts": {
+                            "opts": [
+                                {
+                                    "l": {
+                                        "en-US": "SHA1"
+                                    },
+                                    "v": "1"
+                                },
+                                {
+                                    "l": {
+                                        "en-US": "SHA224"
+                                    },
+                                    "v": "224"
+                                },
+                                {
+                                    "l": {
+                                        "en-US": "SHA256"
+                                    },
+                                    "v": "256"
+                                },
+                                {
+                                    "l": {
+                                        "en-US": "SHA384"
+                                    },
+                                    "v": "384"
+                                },
+                                {
+                                    "l": {
+                                        "en-US": "SHA512"
+                                    },
+                                    "v": "512"
+                                },
+                                {
+                                    "l": {
+                                        "en-US": "SHA3"
+                                    },
+                                    "v": "3"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "key",
+                    "type": "str",
+                    "value": "",
+                    "ui": {
+                        "icon": "font-awesome/fa-key",
+                        "label": {
+                            "en-US": "Key"
+                        },
+                        "type": "input",
+                        "opts": {
+                            "types": [
+                                "str"
+                            ]
+                        }
+                    }
+                }
+            ],
+            "meta": {},
+            "color": "#3FADB5",
+            "icon": "font-awesome/fa-key"
+        },
+        {
+            "id": "54d1fe1eeb773754",
+            "type": "function",
+            "z": "422a2f30f429bc31",
+            "name": "Hash-based Message Authentication Code",
+            "func": "function HMAC1(data,key){\n    let hmac = cryptoJs.algo.HMAC.create(cryptoJs.algo.SHA1,key)\n    hmac.update(JSON.stringify(data));\n    return hmac.finalize().toString();\n}\nfunction HMAC224(data,key){\n    let hmac = cryptoJs.algo.HMAC.create(cryptoJs.algo.SHA224,key)\n    hmac.update(JSON.stringify(data));\n    return hmac.finalize().toString();\n}\nfunction HMAC256(data,key){\n    let hmac = cryptoJs.algo.HMAC.create(cryptoJs.algo.SHA256,key)\n    hmac.update(JSON.stringify(data));\n    return hmac.finalize().toString();\n}\nfunction HMAC384(data,key){\n    let hmac = cryptoJs.algo.HMAC.create(cryptoJs.algo.SHA384,key)\n    hmac.update(JSON.stringify(data));\n    return hmac.finalize().toString();\n}\nfunction HMAC512(data,key){\n    let hmac = cryptoJs.algo.HMAC.create(cryptoJs.algo.SHA512,key)\n    hmac.update(JSON.stringify(data));\n    return hmac.finalize().toString();\n}\nfunction HMAC3(data,key){\n    let hmac = cryptoJs.algo.HMAC.create(cryptoJs.algo.SHA3,key)\n    hmac.update(JSON.stringify(data));\n    return hmac.finalize().toString();\n}\n\ndata = msg.payload\nlet hmac, algo, version = data.version || env.get('version')\nswitch(version){\n    case \"1\":\n        algo = \"SHA1\"\n        hmac = HMAC1(data.data, data.key|| env.get('key'))\n        break;\n    case \"224\":\n        algo = \"SHA224\"\n        hmac = HMAC224(data.data, data.key|| env.get('key'))\n        break;\n    case \"256\":\n        algo = \"SHA256\"\n        hmac = HMAC256(data.data, data.key|| env.get('key'))\n        break;\n    case \"384\":\n        algo = \"SHA384\"\n        hmac = HMAC384(data.data, data.key|| env.get('key'))\n        break;\n    case \"512\":\n        algo = \"SHA512\"\n        hmac = HMAC512(data.data, data.key|| env.get('key'))\n        break;\n    case \"3\":\n        algo = \"SHA3\"\n        hmac = HMAC3(data.data, data.key|| env.get('key'))\n        break;\n}\n\nmsg.payload = {\n    algo: algo,\n    hash: hmac\n}\nreturn msg;",
+            "outputs": 1,
+            "noerr": 0,
+            "initialize": "",
+            "finalize": "",
+            "libs": [
+                {
+                    "var": "cryptoJs",
+                    "module": "crypto-js"
+                }
+            ],
+            "x": 610,
+            "y": 200,
+            "wires": [
+                []
+            ]
+        },
+        {
+            "id": "86c9cf7c4c6709b8",
+            "type": "subflow",
+            "name": "SHA",
+            "info": "",
+            "category": "CryptoRed",
+            "in": [
+                {
+                    "x": 260,
+                    "y": 240,
+                    "wires": [
+                        {
+                            "id": "ea6d34cdbe6f1d9f"
+                        }
+                    ]
+                }
+            ],
+            "out": [
+                {
+                    "x": 720,
+                    "y": 240,
+                    "wires": [
+                        {
+                            "id": "ea6d34cdbe6f1d9f",
+                            "port": 0
+                        }
+                    ]
+                }
+            ],
+            "env": [
+                {
+                    "name": "version",
+                    "type": "str",
+                    "value": "1",
+                    "ui": {
+                        "icon": "font-awesome/fa-cog",
+                        "label": {
+                            "en-US": "Version"
+                        },
+                        "type": "select",
+                        "opts": {
+                            "opts": [
+                                {
+                                    "l": {
+                                        "en-US": "SHA1"
+                                    },
+                                    "v": "1"
+                                },
+                                {
+                                    "l": {
+                                        "en-US": "SHA224"
+                                    },
+                                    "v": "224"
+                                },
+                                {
+                                    "l": {
+                                        "en-US": "SHA256"
+                                    },
+                                    "v": "256"
+                                },
+                                {
+                                    "l": {
+                                        "en-US": "SHA384"
+                                    },
+                                    "v": "384"
+                                },
+                                {
+                                    "l": {
+                                        "en-US": "SHA512"
+                                    },
+                                    "v": "512"
+                                },
+                                {
+                                    "l": {
+                                        "en-US": "SHA3"
+                                    },
+                                    "v": "3"
+                                }
+                            ]
+                        }
+                    }
+                }
+            ],
+            "meta": {
+                "author": "Doth"
+            },
+            "color": "#3FADB5",
+            "icon": "font-awesome/fa-lock"
+        },
+        {
+            "id": "ea6d34cdbe6f1d9f",
+            "type": "function",
+            "z": "86c9cf7c4c6709b8",
+            "name": "Secure Hash Algorithm",
+            "func": "function hash1(data){\n    return cryptoJs.SHA1(JSON.stringify(data)).toString();\n}\nfunction hash224(data){\n    return cryptoJs.SHA224(JSON.stringify(data)).toString();\n}\nfunction hash256(data){\n    return cryptoJs.SHA256(JSON.stringify(data)).toString();\n}\nfunction hash384(data){\n    return cryptoJs.SHA384(JSON.stringify(data)).toString();\n}\nfunction hash512(data){\n    return cryptoJs.SHA512(JSON.stringify(data)).toString();\n}\nfunction hash3(data){\n    return cryptoJs.SHA3(JSON.stringify(data)).toString();\n}\ndata = msg.payload.data\nlet hash, algo, version = msg.payload.version || env.get('version');\nswitch(version){\n    case \"1\":\n        algo = \"SHA1\"\n        hash = hash1(data)\n        break;\n    case \"224\":\n        algo = \"SHA224\"\n        hash = hash224(data)\n        break;\n    case \"256\":\n        algo = \"SHA256\"\n        hash = hash256(data)\n        break;\n    case \"384\":\n        algo = \"SHA384\"\n        hash = hash384(data)\n        break;\n    case \"512\":\n        algo = \"SHA512\"\n        hash = hash512(data)\n        break;\n    case \"3\":\n        algo = \"SHA3\"\n        hash = hash3(data)\n        break;\n}\n\nmsg.payload = {\n    algo: algo,\n    hash: hash\n} \nreturn msg;",
+            "outputs": 1,
+            "noerr": 0,
+            "initialize": "",
+            "finalize": "",
+            "libs": [
+                {
+                    "var": "cryptoJs",
+                    "module": "crypto-js"
+                }
+            ],
+            "x": 500,
+            "y": 240,
+            "wires": [
+                []
+            ]
+        },
+        {
+            "id": "036623825645c2dc",
+            "type": "http in",
+            "z": "67cc197263b1b567",
+            "name": "",
+            "url": "/init",
+            "method": "post",
+            "upload": false,
+            "swaggerDoc": "",
+            "x": 200,
+            "y": 180,
+            "wires": [
+                [
+                    "18549d9ecbe54d0f"
+                ]
+            ]
+        },
+        {
+            "id": "18549d9ecbe54d0f",
+            "type": "http response",
+            "z": "67cc197263b1b567",
+            "name": "",
+            "statusCode": "",
+            "headers": {},
+            "x": 410,
+            "y": 180,
+            "wires": []
+        },
+        {
+            "id": "9503eb0bcfdcc31f",
+            "type": "http in",
+            "z": "67cc197263b1b567",
+            "name": "",
+            "url": "/generate",
+            "method": "post",
+            "upload": false,
+            "swaggerDoc": "",
+            "x": 220,
+            "y": 260,
+            "wires": [
+                [
+                    "9bbdde776462285b"
+                ]
+            ]
+        },
+        {
+            "id": "bab648fad47cbb3d",
+            "type": "http in",
+            "z": "67cc197263b1b567",
+            "name": "",
+            "url": "/verify",
+            "method": "post",
+            "upload": false,
+            "swaggerDoc": "",
+            "x": 210,
+            "y": 420,
+            "wires": [
+                [
+                    "40c98d14c0d68603"
+                ]
+            ]
+        },
+        {
+            "id": "4b7ff7b9051c5cf0",
+            "type": "subflow:86c9cf7c4c6709b8",
+            "z": "67cc197263b1b567",
+            "name": "",
+            "x": 770,
+            "y": 240,
+            "wires": [
+                [
+                    "e33f18045f7bcfed"
+                ]
+            ]
+        },
+        {
+            "id": "e61199e39c8dc02b",
+            "type": "http response",
+            "z": "67cc197263b1b567",
+            "name": "",
+            "statusCode": "",
+            "headers": {},
+            "x": 1390,
+            "y": 340,
+            "wires": []
+        },
+        {
+            "id": "9bbdde776462285b",
+            "type": "switch",
+            "z": "67cc197263b1b567",
+            "name": "",
+            "property": "payload.function",
+            "propertyType": "msg",
+            "rules": [
+                {
+                    "t": "eq",
+                    "v": "SHA",
+                    "vt": "str"
+                },
+                {
+                    "t": "eq",
+                    "v": "HMAC",
+                    "vt": "str"
+                }
+            ],
+            "checkall": "true",
+            "repair": false,
+            "outputs": 2,
+            "x": 450,
+            "y": 260,
+            "wires": [
+                [
+                    "4b7ff7b9051c5cf0"
+                ],
+                [
+                    "0a25678abb287a8e"
+                ]
+            ]
+        },
+        {
+            "id": "0a25678abb287a8e",
+            "type": "subflow:422a2f30f429bc31",
+            "z": "67cc197263b1b567",
+            "name": "",
+            "x": 770,
+            "y": 280,
+            "wires": [
+                [
+                    "e33f18045f7bcfed"
+                ]
+            ]
+        },
+        {
+            "id": "59dff3cd8211e8c3",
+            "type": "switch",
+            "z": "67cc197263b1b567",
+            "name": "",
+            "property": "payload.function",
+            "propertyType": "msg",
+            "rules": [
+                {
+                    "t": "eq",
+                    "v": "SHA",
+                    "vt": "str"
+                },
+                {
+                    "t": "eq",
+                    "v": "HMAC",
+                    "vt": "str"
+                }
+            ],
+            "checkall": "true",
+            "repair": false,
+            "outputs": 2,
+            "x": 590,
+            "y": 420,
+            "wires": [
+                [
+                    "0ef550e751a9f14f"
+                ],
+                [
+                    "994863ea95624d1e"
+                ]
+            ]
+        },
+        {
+            "id": "e33f18045f7bcfed",
+            "type": "change",
+            "z": "67cc197263b1b567",
+            "name": "SET RES",
+            "rules": [
+                {
+                    "t": "delete",
+                    "p": "payload.function",
+                    "pt": "msg"
+                },
+                {
+                    "t": "delete",
+                    "p": "payload.version",
+                    "pt": "msg"
+                }
+            ],
+            "action": "",
+            "property": "",
+            "from": "",
+            "to": "",
+            "reg": false,
+            "x": 1100,
+            "y": 260,
+            "wires": [
+                [
+                    "e61199e39c8dc02b"
+                ]
+            ]
+        },
+        {
+            "id": "40c98d14c0d68603",
+            "type": "change",
+            "z": "67cc197263b1b567",
+            "name": "SET VERIFICATION",
+            "rules": [
+                {
+                    "t": "set",
+                    "p": "verification",
+                    "pt": "msg",
+                    "to": "payload.hash",
+                    "tot": "msg"
+                },
+                {
+                    "t": "set",
+                    "p": "data",
+                    "pt": "msg",
+                    "to": "payload.data",
+                    "tot": "msg"
+                }
+            ],
+            "action": "",
+            "property": "",
+            "from": "",
+            "to": "",
+            "reg": false,
+            "x": 420,
+            "y": 420,
+            "wires": [
+                [
+                    "59dff3cd8211e8c3"
+                ]
+            ]
+        },
+        {
+            "id": "0ef550e751a9f14f",
+            "type": "subflow:86c9cf7c4c6709b8",
+            "z": "67cc197263b1b567",
+            "name": "",
+            "x": 770,
+            "y": 400,
+            "wires": [
+                [
+                    "8de967df4b06805d"
+                ]
+            ]
+        },
+        {
+            "id": "8de967df4b06805d",
+            "type": "switch",
+            "z": "67cc197263b1b567",
+            "name": "",
+            "property": "payload.hash",
+            "propertyType": "msg",
+            "rules": [
+                {
+                    "t": "eq",
+                    "v": "verification",
+                    "vt": "msg"
+                },
+                {
+                    "t": "neq",
+                    "v": "verification",
+                    "vt": "msg"
+                }
+            ],
+            "checkall": "true",
+            "repair": false,
+            "outputs": 2,
+            "x": 950,
+            "y": 420,
+            "wires": [
+                [
+                    "ca791d628847cb6d"
+                ],
+                [
+                    "f6632f1aed8a8a3f"
+                ]
+            ]
+        },
+        {
+            "id": "994863ea95624d1e",
+            "type": "subflow:422a2f30f429bc31",
+            "z": "67cc197263b1b567",
+            "name": "",
+            "x": 770,
+            "y": 440,
+            "wires": [
+                [
+                    "8de967df4b06805d"
+                ]
+            ]
+        },
+        {
+            "id": "ca791d628847cb6d",
+            "type": "change",
+            "z": "67cc197263b1b567",
+            "name": "SET RES",
+            "rules": [
+                {
+                    "t": "set",
+                    "p": "payload.data",
+                    "pt": "msg",
+                    "to": "data",
+                    "tot": "msg"
+                },
+                {
+                    "t": "set",
+                    "p": "payload.verification",
+                    "pt": "msg",
+                    "to": "true",
+                    "tot": "bool"
+                },
+                {
+                    "t": "delete",
+                    "p": "verification",
+                    "pt": "msg"
+                },
+                {
+                    "t": "delete",
+                    "p": "data",
+                    "pt": "msg"
+                }
+            ],
+            "action": "",
+            "property": "",
+            "from": "",
+            "to": "",
+            "reg": false,
+            "x": 1100,
+            "y": 400,
+            "wires": [
+                [
+                    "e61199e39c8dc02b"
+                ]
+            ]
+        },
+        {
+            "id": "f6632f1aed8a8a3f",
+            "type": "change",
+            "z": "67cc197263b1b567",
+            "name": "SET RES",
+            "rules": [
+                {
+                    "t": "set",
+                    "p": "payload.data",
+                    "pt": "msg",
+                    "to": "data",
+                    "tot": "msg"
+                },
+                {
+                    "t": "set",
+                    "p": "payload.verification",
+                    "pt": "msg",
+                    "to": "false",
+                    "tot": "bool"
+                },
+                {
+                    "t": "delete",
+                    "p": "verification",
+                    "pt": "msg"
+                },
+                {
+                    "t": "delete",
+                    "p": "data",
+                    "pt": "msg"
+                }
+            ],
+            "action": "",
+            "property": "",
+            "from": "",
+            "to": "",
+            "reg": false,
+            "x": 1100,
+            "y": 440,
+            "wires": [
+                [
+                    "e61199e39c8dc02b"
+                ]
+            ]
+        }
+    ]
+}
