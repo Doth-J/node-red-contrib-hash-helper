@@ -27,9 +27,10 @@ The __data__ payload can be either a string or an object, you must define the __
 
 ---
 
-### Generating Hash-Based Message Authentication Codes :inbox_tray: :arrow_right:
-* Setting the payload of the **Generate Hash** injector:
+### Generating HMAC :inbox_tray: :arrow_right:
 :warning: In the case of ``HMAC``, the __key__ parameter must also be set!  
+
+* Setting the payload of the **Generate Hash** injector:
 
 ![HMAC1](https://github.com/Doth-J/node-red-contrib-hash-helper/blob/master/docs/HMAC1.PNG)
 
@@ -37,8 +38,6 @@ The __data__ payload can be either a string or an object, you must define the __
 * HMAC response payload:
 
 ![HMAC2](https://github.com/Doth-J/node-red-contrib-hash-helper/blob/master/docs/HMAC2.PNG)
-
----
 
 ## Verifier API :toolbox:
 
@@ -61,8 +60,9 @@ The __data__ payload can be either a string or an object, you must define the __
 ---
 
 ### Verifying HMAC :inbox_tray: :arrow_right:
-* Setting the payload of the **Verify Hash** injector:
 :warning: In the case of ``HMAC``, the __key__ parameter must also be set!  
+
+* Setting the payload of the **Verify Hash** injector:
 
 ![HMAC3](https://github.com/Doth-J/node-red-contrib-hash-helper/blob/master/docs/HMAC3.PNG)
 
